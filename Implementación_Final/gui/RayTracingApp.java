@@ -15,15 +15,15 @@ public class RayTracingApp extends JPanel {
     public RayTracingApp() {
         setLayout(new BorderLayout());
 
-        // botón para iniciar el ray tracing
-        JButton renderizarBtn = new JButton("Renderizar");
+        // Botón para iniciar el ray tracing
+        JButton renderizarBtn = new JButton("Ejecutar Ray Tracing");
         add(renderizarBtn, BorderLayout.NORTH);
 
         // Etiqueta para mostrar la imagen renderizada
         imagenLabel = new JLabel();
         add(imagenLabel, BorderLayout.CENTER);
 
-        // evt para el botón de renderizado
+        // Evento para el botón de renderizado
         renderizarBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -37,9 +37,9 @@ public class RayTracingApp extends JPanel {
     }
 
     private BufferedImage renderizarImagen() {
-        // crear una escena y agregar objetos
+        // Crear una escena y agregar objetos
         Escena escena = new Escena();
-        //agregar objetos a la escena ...
+        // ... agregar objetos a la escena ...
 
         // Crear el ray tracer y renderizar la escena
         RayTracer rayTracer = new RayTracer(escena);
