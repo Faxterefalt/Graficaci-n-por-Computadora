@@ -1,10 +1,12 @@
-package Implementación_Final.componentes.objetos3D;
+package componentes.objetos3D;
+
+import raytracing.Color;
 
 public class Esfera extends Objeto3D {
     private float radio;
 
-    public Esfera(float x, float y, float z, float radio) {
-        super(x, y, z);
+    public Esfera(float x, float y, float z, float radio, Color color) {
+        super(x, y, z, color);
         this.radio = radio;
     }
 

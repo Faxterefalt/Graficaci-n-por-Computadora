@@ -1,35 +1,46 @@
-package Implementación_Final.raytracing;
+package raytracing;
 
 public class Color {
-    private float r, g, b;
+    private int red;
+    private int green;
+    private int blue;
 
-    public Color(float r, float g, float b) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
+    public Color(int red, int green, int blue) {
+        this.red = red;
+        this.green = green;
+        this.blue = blue;
     }
 
-    public float getR() {
-        return r;
+    public int getRed() {
+        return red;
     }
 
-    public void setR(float r) {
-        this.r = r;
+    public void setRed(int red) {
+        this.red = red;
     }
 
-    public float getG() {
-        return g;
+    public int getGreen() {
+        return green;
     }
 
-    public void setG(float g) {
-        this.g = g;
+    public void setGreen(int green) {
+        this.green = green;
     }
 
-    public float getB() {
-        return b;
+    public int getBlue() {
+        return blue;
     }
 
-    public void setB(float b) {
-        this.b = b;
+    public void setBlue(int blue) {
+        this.blue = blue;
+    }
+
+    public java.awt.Color toAWTColor() {
+        return new java.awt.Color(red, green, blue);
+    }
+
+    @Override
+    public String toString() {
+        return "Color{" + "red=" + red + ", green=" + green + ", blue=" + blue + '}';
     }
 }

@@ -1,4 +1,4 @@
-package Implementación_Final.componentes.objetos3D;
+package componentes.objetos3D;
 public class Plano extends Objeto3D {
     private float ancho, alto;
 

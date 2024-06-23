@@ -1,5 +1,3 @@
-package Implementación_Final.gui;
-
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -8,6 +6,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
+import raytracing.Escena;
+import raytracing.RayTracer;
 
 public class RayTracingApp extends JPanel {
     private JLabel imagenLabel;
@@ -15,11 +15,11 @@ public class RayTracingApp extends JPanel {
     public RayTracingApp() {
         setLayout(new BorderLayout());
 
-        // Botón para iniciar el ray tracing
+        //iniciar el ray tracing
         JButton renderizarBtn = new JButton("Ejecutar Ray Tracing");
         add(renderizarBtn, BorderLayout.NORTH);
 
-        // Etiqueta para mostrar la imagen renderizada
+        //mostrar la imagen renderizada
         imagenLabel = new JLabel();
         add(imagenLabel, BorderLayout.CENTER);
 
@@ -27,7 +27,7 @@ public class RayTracingApp extends JPanel {
         renderizarBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Lógica para ejecutar el ray tracing y mostrar la imagen resultante
+                //ejecutar el ray tracing y mostrar la imagen resultante
                 BufferedImage imagen = renderizarImagen();
                 if (imagen != null) {
                     imagenLabel.setIcon(new ImageIcon(imagen));
@@ -37,7 +37,7 @@ public class RayTracingApp extends JPanel {
     }
 
     private BufferedImage renderizarImagen() {
-        // Crear una escena y agregar objetos
+        // crear escena y agregar objetos
         Escena escena = new Escena();
         // ... agregar objetos a la escena ...
 

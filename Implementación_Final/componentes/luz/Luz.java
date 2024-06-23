@@ -1,25 +1,56 @@
-package Implementación_Final.componentes.luz;
+package componentes.luz;
+import java.awt.Color;
+import raytracing.Vector3;
+public abstract class Luz {
+	
+	private Color color;
+	private Vector3 position;
+	private double intensity;
+	private Vector3 direction;
+	
+	/**
+	 * constructor
+	 * @param position
+	 * @param direction
+	 * @param color
+	 * @param intensity
+	 */
+	public Luz(Vector3 position, Vector3 direction, Color color, double intensity) {
+		setColor(color);
+		setPosition(position);
+		setDirection(direction);
+		setIntensity(intensity);
+	}
 
-public class Luz {
-    private float x, y, z;
+	public Color getColor() {
+		return color;
+	}
 
-    public Luz(float x, float y, float z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-    }
+	public void setColor(Color color) {
+		this.color = color;
+	}
 
-    public float getX() { return x; }
-    public void setX(float x) { this.x = x; }
+	public Vector3 getPosition() {
+		return position;
+	}
 
-    public float getY() { return y; }
-    public void setY(float y) { this.y = y; }
+	public void setPosition(Vector3 direction) {
+		this.position = direction;
+	}
 
-    public float getZ() { return z; }
-    public void setZ(float z) { this.z = z; }
+	public double getIntensity() {
+		return intensity;
+	}
 
-    @Override
-    public String toString() {
-        return "Luz{" + "x=" + x + ", y=" + y + ", z=" + z + '}';
-    }
+	public void setIntensity(double intensity) {
+		this.intensity = intensity;
+	}
+	
+	public abstract double getProjection(Vector3 normal, Vector3 hitPos);
+
+	public abstract Vector3 getDirection(Vector3 hitPos);
+
+	public void setDirection(Vector3 direction) {
+		this.direction = direction;
+	}
 }

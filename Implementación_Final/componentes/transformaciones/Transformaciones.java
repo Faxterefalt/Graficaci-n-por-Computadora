@@ -1,4 +1,4 @@
-package Implementación_Final.componentes.transformaciones;
+package componentes.transformaciones;
 
 import componentes.objetos3D.Objeto3D;
 

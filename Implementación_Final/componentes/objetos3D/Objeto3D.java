@@ -1,13 +1,16 @@
-package Implementación_Final.componentes.objetos3D;
+package componentes.objetos3D;
 
+import raytracing.Color;
 
 public abstract class Objeto3D {
     protected float x, y, z;
+    protected Color color;
 
-    public Objeto3D(float x, float y, float z) {
+    public Objeto3D(float x, float y, float z, Color color) {
         this.x = x;
         this.y = y;
         this.z = z;
+        this.color = color;
     }
 
     public float getX() {
@@ -32,6 +35,14 @@ public abstract class Objeto3D {
 
     public void setZ(float z) {
         this.z = z;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 
     public abstract void escalar(float factor);

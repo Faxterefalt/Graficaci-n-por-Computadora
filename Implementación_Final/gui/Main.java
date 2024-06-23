@@ -1,4 +1,3 @@
-package Implementación_Final.gui;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -10,11 +9,11 @@ public class Main {
         frame.setSize(1200, 800);  // Ajusta el tamaño de la ventana según sea necesario
 
         JPanel modeladorPanel = new ModeladorApp();
-        JPanel rayTracingPanel = new RayTracingApp();
+        // JPanel rayTracingPanel = new RayTracingApp(); // Comentado ya que no está implementado
 
         frame.setLayout(new BorderLayout());
         frame.add(modeladorPanel, BorderLayout.CENTER);
-        frame.add(rayTracingPanel, BorderLayout.EAST);
+        // frame.add(rayTracingPanel, BorderLayout.EAST); // Comentado ya que no está implementado
 
         frame.setVisible(true);
     }
