@@ -1,48 +1,50 @@
-import javax.swing.JPanel;
 import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JOptionPane;
 import java.awt.BorderLayout;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.image.BufferedImage;
-import javax.swing.ImageIcon;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
+import componentes.objetos3D.Objeto3D;
+import raytracing.Camara;
 import raytracing.Escena;
 import raytracing.RayTracer;
+import java.util.ArrayList;
 
 public class RayTracingApp extends JPanel {
-    private JLabel imagenLabel;
+    private JButton ejecutarBtn;
+    private ArrayList<Objeto3D> objetos3D;
 
-    public RayTracingApp() {
+    public RayTracingApp(ArrayList<Objeto3D> objetos3D) {
+        this.objetos3D = objetos3D;
         setLayout(new BorderLayout());
 
-        //iniciar el ray tracing
-        JButton renderizarBtn = new JButton("Ejecutar Ray Tracing");
-        add(renderizarBtn, BorderLayout.NORTH);
-
-        //mostrar la imagen renderizada
-        imagenLabel = new JLabel();
-        add(imagenLabel, BorderLayout.CENTER);
-
-        // Evento para el botón de renderizado
-        renderizarBtn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                //ejecutar el ray tracing y mostrar la imagen resultante
-                BufferedImage imagen = renderizarImagen();
-                if (imagen != null) {
-                    imagenLabel.setIcon(new ImageIcon(imagen));
-                }
-            }
-        });
+        ejecutarBtn = new JButton("Ejecutar RayTracing");
+        ejecutarBtn.addActionListener(e -> renderizarImagen());
+        add(ejecutarBtn, BorderLayout.CENTER);
     }
 
-    private BufferedImage renderizarImagen() {
-        // crear escena y agregar objetos
+    private void renderizarImagen() {
+        // Crear una escena y agregar los objetos 3D actuales
         Escena escena = new Escena();
-        // ... agregar objetos a la escena ...
+        for (Objeto3D obj : objetos3D) {
+            escena.agregarObjeto(obj);
+        }
 
-        // Crear el ray tracer y renderizar la escena
-        RayTracer rayTracer = new RayTracer(escena);
-        return rayTracer.renderizar(400, 300); // Tamaño de la imagen de salida
+        // Configurar la cámara
+        Camara camara = new Camara(0, 0, -5, 0, 0, 0); // Ajustar posición y dirección de la cámara según sea necesario
+
+        // Crear el raytracer y renderizar la imagen
+        RayTracer rayTracer = new RayTracer(escena, camara);
+        BufferedImage imagen = rayTracer.renderizar(800, 600);
+
+        // Guardar la imagen como un archivo .png
+        try {
+            ImageIO.write(imagen, "png", new File("output.png"));
+            JOptionPane.showMessageDialog(this, "Imagen generada correctamente: output.png", "RayTracing Completado", JOptionPane.INFORMATION_MESSAGE);
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "Error al guardar la imagen.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

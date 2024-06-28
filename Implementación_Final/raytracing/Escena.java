@@ -1,8 +1,7 @@
-package Implementación_Final.raytracing;
+package raytracing;
 
 import componentes.objetos3D.Objeto3D;
 import componentes.luz.Luz;
-
 import java.util.ArrayList;
 import java.util.List;
 

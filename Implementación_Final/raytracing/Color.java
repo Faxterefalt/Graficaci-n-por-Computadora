@@ -43,4 +43,8 @@ public class Color {
     public String toString() {
         return "Color{" + "red=" + red + ", green=" + green + ", blue=" + blue + '}';
     }
+
+    public float[] toArray() {
+        return new float[]{red, green, blue};
+    }
 }

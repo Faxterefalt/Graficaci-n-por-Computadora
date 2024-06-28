@@ -23,11 +23,12 @@ import raytracing.Color;
 public class ModeladorApp extends JPanel {
     private JPanel herramientasPanel;
     private VisualizacionPanel visualizacionPanel;
-    private ArrayList<Objeto3D> objetos3D = new ArrayList<>();
+    private ArrayList<Objeto3D> objetos3D;
     private Esfera esferaSeleccionada = null;
     private int offsetX, offsetY;
 
-    public ModeladorApp() {
+    public ModeladorApp(ArrayList<Objeto3D> objetos3D) {
+        this.objetos3D = objetos3D;
         setLayout(new BorderLayout());
 
         //herramientas de modelado

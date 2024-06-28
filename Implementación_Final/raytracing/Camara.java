@@ -1,4 +1,4 @@
-package Implementación_Final.raytracing;
+package raytracing;
 
 public class Camara {
     private float x, y, z;
@@ -31,4 +31,3 @@ public class Camara {
     public float getLookAtZ() { return lookAtZ; }
     public void setLookAtZ(float lookAtZ) { this.lookAtZ = lookAtZ; }
 }
-
