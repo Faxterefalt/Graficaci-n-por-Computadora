@@ -1,32 +1,17 @@
-package raytracing;
-
-import componentes.objetos3D.Objeto3D;
-import componentes.luz.Luz;
 import java.util.ArrayList;
-import java.util.List;
-
+import componentes.objetos3D.Objeto3D;
 public class Escena {
-    private List<Objeto3D> objetos;
-    private List<Luz> luces;
+    private ArrayList<Objeto3D> objetos;
 
     public Escena() {
-        this.objetos = new ArrayList<>();
-        this.luces = new ArrayList<>();
+        objetos = new ArrayList<>();
     }
 
     public void agregarObjeto(Objeto3D objeto) {
         objetos.add(objeto);
     }
 
-    public void agregarLuz(Luz luz) {
-        luces.add(luz);
-    }
-
-    public List<Objeto3D> getObjetos() {
+    public ArrayList<Objeto3D> getObjetos() {
         return objetos;
-    }
-
-    public List<Luz> getLuces() {
-        return luces;
     }
 }

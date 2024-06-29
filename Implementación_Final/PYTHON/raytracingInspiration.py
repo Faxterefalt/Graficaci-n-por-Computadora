@@ -1,0 +1,198 @@
+from PIL import Image
+import numpy as np
+
+w = 400
+h = 300
+
+def normalize(x):
+    x /= np.linalg.norm(x)
+    return x
+
+def intersect_plane(O, D, P, normal):
+    denom = np.dot(D, normal)
+    if np.abs(denom) < 1e-6:
+        return np.inf
+    d = np.dot(P - O, normal) / denom
+    if d < 0:
+        return np.inf
+    return d
+
+def intersectarEsfera(origen,direccion,centro,radio):
+    xo,yo,zo = origen[0],origen[1],origen[2]
+    xd,yd,zd = direccion[0],direccion[1],direccion[2]
+    xc,yc,zc = centro[0], centro[1],centro[2]
+    ecA = xd**2 +yd**2 + zd**2
+    ecB = 2*xd*(xo-xc)+2*yd*(yo-yc)+2*zd*(zo-zc)
+    ecC = (xo-xc)**2+(yo-yc)**2+(zo-zc)**2-radio**2
+    discriminante = ecB**2-4*ecA*ecC
+    if discriminante < 0 :
+        return np.inf 
+    else:
+        t1 = (-ecB+ np.sqrt(discriminante))/(2.00)
+        t2 = (-ecB- np.sqrt(discriminante))/(2.00)
+        aux = t1 if ecB < 0 else t2
+        t1 = aux / ecA
+        t2 = ecC / aux  
+        hayInterseccion =  t1 > 0 or t2 > 0 
+        if hayInterseccion and t1 > 0:
+            pointInter = np.array(origen) + t1*np.array(direccion)
+        elif hayInterseccion and t2 > 0:
+            pointInter = np.array(origen) + t2*np.array(direccion)
+        else:
+            return np.inf
+        vectorNormal = (np.subtract(pointInter,centro))/radio
+        vector = [pointInter, vectorNormal]
+        t1, t2 = min(t1, t2), max(t1, t2)
+        if t2 >= 0:
+            return t2 if t1 < 0 else t1
+        return np.inf
+
+def intersectarCuadratic(origen,direccion,a,b,c,d,e,f,g,h,i,j):
+    xo,yo,zo = origen[0],origen[1],origen[2]
+    xd,yd,zd = direccion[0],direccion[1],direccion[2]
+    Ac = a*xd**2+b*yd**2+c*zd**2+d*xd*yd+e*xd*zd+f*yd*zd 
+    Bc = 2*a*xo*xd+2*b*yo*yd+2*c*zo*zd+d*xo*yd+e*xo*zd+e*zo*xd+f*yo*zd+f*zo*yd+g*xd+h*yd+i*zd
+    Cc = a*xo**2+b*yo**2+c*zo**2+d*xo*yo+e*xo*zo+f*yo*zo+g*xo+h*yo+i*zo+j 
+    discriminante = Bc**2 -(4*Ac*Cc)
+    if discriminante < 0 :
+        return np.inf 
+    else:
+        t1 = (-Bc+ np.sqrt(discriminante))/(2.00)
+        t2 = (-Bc- np.sqrt(discriminante))/(2.00)
+        aux = t1 if Bc < 0 else t2
+        t1 = aux / Ac
+        t2 = Cc / aux
+        t1, t2 = min(t1, t2), max(t1, t2)
+        if t2 >= 0:
+            return t2 if t1 < 0 else t1
+        return np.inf
+
+def intersect(O, D, obj):
+    if obj['type'] == 'plane':
+        return intersect_plane(O, D, obj['position'], obj['normal'])
+    elif obj['type'] == 'sphere':
+        return intersectarEsfera(O, D, obj['position'], obj['radius'])
+    elif obj['type'] == 'cuadratic':
+        return intersectarCuadratic(O, D, obj['a'],obj['b'],obj['c'],obj['d'],obj['e'],obj['f'],obj['g'],obj['h'],obj['i'],obj['j'])
+
+def rayoTransmite(normal, vector):
+    n21 = 1
+    normalA = np.array(normal)
+    vectorA = np.array(vector)
+    vectorC = np.cross(normalA, vectorA) # producto cruz en vectores
+    vectorCcuadrado = np.dot(vectorC, vectorC) #producto punto en vector c
+    direccionTransmite = n21*vectorA + (n21*vectorC - np.sqrt(1+(n21**2*(vectorCcuadrado-1))))*normalA
+    return direccionTransmite
+
+def get_normal(obj, rayo):
+    if obj['type'] == 'sphere':
+        rayoDireccion= normalize(rayo - obj['position'])
+    elif obj['type'] == 'plane':
+        rayoDireccion= obj['normal']
+    elif obj['type'] == 'cuadratic':
+        rayoDireccion= normalize(rayo)
+    return rayoDireccion
+    
+def get_color(obj, rayo):
+    color = obj['color']
+    if not hasattr(color, '__len__'):
+        color = color(rayo)
+    return color
+
+def trace_ray(rayO, rayD):
+    t = np.inf
+    for i, obj in enumerate(scene):
+        t_obj = intersect(rayO, rayD, obj)
+        if t_obj < t:
+            t, obj_idx = t_obj, i
+    if t == np.inf:
+        return
+
+    obj = scene[obj_idx]
+    rayo = rayO + rayD * t
+    rayoDireccion= get_normal(obj, rayo)
+    color = get_color(obj, rayo)
+    toL = normalize(Light - rayo)
+    toO = normalize(origen - rayo)
+
+    col_ray = ambient
+    col_ray += obj.get('diffuse_c', diffuse_c) * max(np.dot(rayoDireccion, toL), 0) * color
+    col_ray += obj.get('specular_c', specular_c) * max(np.dot(rayoDireccion, normalize(toL + toO)), 0) ** specular_k * color_light
+    col_ray += obj.get('specular_t', specular_t) * max(np.dot(rayoTransmite(toO,rayoDireccion), normalize(toL+toO)), 0) **specular_k
+    return obj, rayo,  rayoDireccion, col_ray
+
+def add_sphere(position, radius, color):
+    return dict(type='sphere', position=np.array(position), 
+        radius=np.array(radius), color=np.array(color), reflection=.5)
+    
+def add_plane(position, normal):
+    return dict(type='plane', position=np.array(position), 
+        normal=np.array(normal),
+        color=lambda M: (color_plane1 
+            if (int(M[0] * 2) % 2) == (int(M[2] * 2) % 2) else color_plane0),
+        diffuse_c=.75, specular_c=.5, reflection=.25, specular_t = 1.1)
+
+def add_cuadratic(position, color,a,b,c,d,e,f,g,h,i,j):
+    return dict(type='cuadratic',position=np.array(position),a=a,b=b,c=c,d=d,e=e,
+    f=f,g=g,h=h,i=i,j=j, color= np.array(color), diffuse_c= 1.,specular_c=1.,reflection=.7,specular_t=1.)
+# List of objects.
+color_plane0 = 1. * np.ones(3)
+color_plane1 = 0. * np.ones(3)
+scene = [add_cuadratic([-.15, .1, 1.],[0.044,0.332,0.276],1,4,0,0,0,0,0,0,0,-16),
+         add_plane([0.,0., 7.],[0.,0.,1.]),
+         add_sphere([1.75, .0, 3.5], .5, [.5, .223, .5]),
+         add_sphere([0.05, .1, 2.25], .6, [0., 1., 0.]),
+         add_sphere([-1.05, .1, 1.], .6, [1., 0., 0.]),
+         add_plane([0., -.5, 0.], [0., 1., 0.])     
+    ]
+
+Light = np.array([5., 5., -10.])
+color_light = np.ones(3)
+
+ambient = .05
+diffuse_c = 1.
+specular_c = 1.
+specular_k = 50
+specular_t = 1.
+
+depth_max = 5  
+col = np.zeros(3)  
+origen = np.array([0., 0.35, -1.])   #En un principio es la camara
+punteroOrigen = np.array([0., 0., 0.])  
+img = np.zeros((h, w, 3))
+
+r = float(w) / h
+S = (-1., -1. / r + .25, 1., 1. / r + .25)
+
+
+def recursive_tray(rayO, rayD, profundidad, reflection):
+    global col,depth_max
+ 
+    if profundidad == depth_max:
+        return
+    traced = trace_ray(rayO, rayD)
+    if not traced:
+        return
+    obj, rayo,  rayoDireccion, col_ray = traced
+    # Reflexion.
+    rayO, rayD = rayo + rayoDireccion* .0001, normalize(rayD - 2 * np.dot(rayD, rayoDireccion) * rayoDireccion)
+    col += reflection * col_ray
+    reflection *= obj.get('reflection', 1.)
+    recursive_tray(rayO,rayD,profundidad+1,reflection)
+ 
+ 
+for i, x in enumerate(np.linspace(S[0], S[2], w)):
+    if i % 10 == 0:
+        print(i / float(w) * 100, "%")
+    for j, y in enumerate(np.linspace(S[1], S[3], h)):
+        col[:] = 0
+        punteroOrigen[:2] = (x, y) #modifico x y de de donde apunta camara
+        direccion = normalize(punteroOrigen - origen)
+        depth = 0
+        rayO, rayD = origen, direccion
+        reflection = 1.
+        recursive_tray(rayO,rayD,0,1)
+        img[h - j - 1, i, :] = np.clip(col, 0, 1)
+
+im = Image.fromarray((255 * img).astype(np.uint8), "RGB")
+im.save("fig5.png")

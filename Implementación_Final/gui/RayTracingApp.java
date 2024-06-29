@@ -6,12 +6,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import componentes.objetos3D.Objeto3D;
-import raytracing.Camara;
-import raytracing.Escena;
-import raytracing.RayTracer;
 import java.util.ArrayList;
-
+import java.awt.Color;
+import componentes.objetos3D.Objeto3D;
+import raytracing.Escena;
+import raytracing.Camara;
+import raytracing.RayTracer;
 public class RayTracingApp extends JPanel {
     private JButton ejecutarBtn;
     private ArrayList<Objeto3D> objetos3D;
@@ -33,7 +33,7 @@ public class RayTracingApp extends JPanel {
         }
 
         // Configurar la cámara
-        Camara camara = new Camara(0, 0, -5, 0, 0, 0); // Ajustar posición y dirección de la cámara según sea necesario
+        Camara camara = new Camara(new double[]{0, 0.35, -1}, new double[]{0, 0, 0});
 
         // Crear el raytracer y renderizar la imagen
         RayTracer rayTracer = new RayTracer(escena, camara);
